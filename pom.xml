@@ -1,0 +1,134 @@
+<project
+ xmlns="http://maven.apache.org/POM/4.0.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation=
+ "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Above is all boilerplate. Next: your project's "Maven coordinates" -->
+
+  <groupId>com.hilbertcurve</groupId>
+  <artifactId>hilbert</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <!-- Coordinates are nice, but so are names and descriptions for humans. -->
+
+  <name>Hilbert Index in Postgres</name>
+  <description>Project that provides Hilbert Index</description>
+
+  <!--
+    Many Maven plugins care what character set encoding your files are in.
+    For this example I've chosen the most restrictive (US-ASCII). Change if
+    your files use a different encoding, but be sure not to lie. You should
+    be sure the encoding named here IS the way your source files are coded.
+  -->
+  
+  <properties>
+    <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+  </properties>
+
+  <!-- Here's where you say your project depends on a pljava-api version. -->
+
+  <dependencies>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>pljava-api</artifactId>
+      <version>1.6.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.uzaygezen</groupId>
+      <artifactId>uzaygezen-core</artifactId>
+      <version>0.2</version>
+
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+  <!-- The rest here is pretty much boilerplate. -->
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <!-- This identifies and version-stamps the jar.
+                 Not essential, but easy and useful. -->
+              <addDefaultImplementationEntries>
+                true
+              </addDefaultImplementationEntries>
+            </manifest>
+
+            <manifestSections>
+              <!-- This identifies a file in the jar named
+                 pljava.ddr as an SQLJDeploymentDescriptor. -->
+              <manifestSection>
+                <name>pljava.ddr</name>
+                <manifestEntries>
+                  <SQLJDeploymentDescriptor>
+                    true
+                  </SQLJDeploymentDescriptor>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass></mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

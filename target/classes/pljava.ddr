@@ -1,0 +1,19 @@
+SQLActions[]={
+"BEGIN INSTALL
+BEGIN PostgreSQL
+CREATE OR REPLACE FUNCTION hilbert(
+	latitude double precision,
+	longitude double precision)
+	RETURNS bigint
+	LANGUAGE java VOLATILE
+	AS 'long=com.hilbertcurve.Hilbert.hilbert(double,double)'
+END PostgreSQL;
+END INSTALL",
+"BEGIN REMOVE
+BEGIN PostgreSQL
+DROP FUNCTION hilbert(
+	latitude double precision,
+	longitude double precision)
+END PostgreSQL;
+END REMOVE"
+}
